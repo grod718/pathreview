@@ -182,3 +182,35 @@ Confirmed via docker compose ps that Redis was genuinely healthy, then hit curl 
 
 **Blockers or open questions:**
 None -- fix, tests, and PR are already complete as of this entry.
+
+## Week 9 — Solution building & PR submission
+
+### Check-in 1 (mid-week)
+
+**Current progress:**
+All sub-tasks from PLAN.md are complete: reproduced the bug live, implemented the fix (redis.Redis.from_url(settings.redis_url, ...)), verified against the running app, and wrote tests/unit/test_health_routes.py covering both the healthy and genuinely-unhealthy Redis paths.
+
+**Next steps:**
+Ran make check and make test-unit to confirm no new failures introduced; opened the PR (#175) against ascherj:main.
+
+**Blockers:**
+None.
+
+---
+
+### Check-in 2 (end of week)
+
+**PR link:** https://github.com/ascherj/pathreview/pull/175
+
+**Branch:** fix/155-redis-host-config
+
+**What you built:**
+Fixed the /health endpoint's Redis check, which referenced nonexistent settings.redis_host/settings.redis_port fields, by switching to redis.Redis.from_url(settings.redis_url, ...) -- the one Redis config field that actually exists in Settings. Added the first route-level test in this codebase to cover the fix.
+
+**Tests added or updated:**
+Added tests/unit/test_health_routes.py with two tests: one confirming /health reports "redis": "healthy" when the Redis ping succeeds (the regression test for this fix), and one confirming it still correctly reports "unhealthy" on a genuine Redis connection failure.
+
+**Self-review confirmation:** [x] make check passes  [x] make test-unit passes
+(Both confirmed via a git stash before/after comparison: the codebase has 53 pre-existing test failures and pre-existing ruff/mypy debt across files unrelated to this change, documented in this journal and in the PR description. My change introduces zero new failures beyond that pre-existing baseline.)
+
+**Draft PR feedback received from:** none
