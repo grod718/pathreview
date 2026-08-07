@@ -214,3 +214,33 @@ Added tests/unit/test_health_routes.py with two tests: one confirming /health re
 (Both confirmed via a git stash before/after comparison: the codebase has 53 pre-existing test failures and pre-existing ruff/mypy debt across files unrelated to this change, documented in this journal and in the PR description. My change introduces zero new failures beyond that pre-existing baseline.)
 
 **Draft PR feedback received from:** none
+## Week 10 — Iteration & reflection
+
+### Reviewer feedback
+
+**Feedback received:** [ ] Yes  [x] No — still awaiting review
+
+**Summary of feedback:**
+No reviewer feedback -- reviewer feedback was not a feature for the Summer 2026 cohort, per the course note in the Week 10 assignment.
+
+**How you responded:**
+N/A.
+
+---
+
+### Reflection
+
+**What was harder than you expected?**
+The git rebase mechanics were the hardest part of this module, not the actual bug or the fix. I hit a stuck rebase-merge directory left over from an earlier attempt, and later ended up with my branch's history duplicated on top of the old commits instead of cleanly replacing them. Working through why git status and git log disagreed with what I expected, and eventually recovering by resetting to a known-good state, took far longer than writing and testing the actual fix.
+
+**What did you learn about working in a large codebase?**
+A tiny mismatch -- one field name that doesn't exist on a config object -- can cause a much bigger, harder-to-see problem than the size of the change suggests. The bug wasn't a crash; it was a silently swallowed exception that made a monitoring endpoint permanently wrong. In my own projects, a typo like that usually breaks something loudly and immediately. In a larger, production-style codebase, a small mismatch can hide behind broad error handling and quietly produce wrong results indefinitely.
+
+**How did AI tools help -- and where did they fall short?**
+AI was most useful for reading and tracing code I hadn't written -- quickly summarizing what a file was responsible for, and confirming exactly why a specific bug happened before I touched anything. It was much less useful for the actual git mechanics: several rebase and commit issues came from copy-paste and terminal quirks that AI couldn't see or predict, and I had to work through the recovery myself by comparing git log and git status output step by step.
+
+**What would you do differently if you started over?**
+I'd check the live GitHub issue tracker before trusting any local files in the repo. Early on, I spent time cross-referencing a local issues manifest file that turned out to be a stale, superseded snapshot -- the actual live tracker had a different, more specific set of issues. If I'd checked the real tracker first, I would have skipped that detour entirely.
+
+**What are you most proud of from this module?**
+Writing the first route-level test for this codebase. There was no existing pattern to copy -- no TestClient usage, no dependency-override example anywhere in the test suite -- so I had to build that pattern from scratch, including figuring out how to mock the database dependency and the Redis client without hitting real services. It's a small thing in the diff, but it's genuinely new infrastructure for the project, not just a copy of something that already existed.
